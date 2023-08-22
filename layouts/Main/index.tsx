@@ -3,22 +3,30 @@
 import { faArtstation, faBlackTie, faFonticonsFi, faHtml5, faPython } from '@fortawesome/free-brands-svg-icons';
 import { faCircleQuestion, faCircleArrowUp, faCircleDollar, faCircleExclamation, faCircle } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useUser } from '@clerk/nextjs';
+import { SignIn, SignInButton, SignOutButton, useAuth, useUser } from '@clerk/nextjs';
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
+  const { sessionId } = useAuth();
   const { user, isLoaded } = useUser();
 
   return (
     <div className="flex min-h-screen w-screen flex-col gap-2 overflow-hidden">
       <header className="flex px-6 py-2 bg-slate-200">
-        <div className="ml-6">
-          <p>Is the user loaded: {String(isLoaded)}</p>
-          <p>Email if available: {user?.emailAddresses[0].emailAddress}</p>
-        </div>
+        {sessionId ? (
+          <>
+            <SignOutButton />
+            <div className="ml-6">
+              <p>Is the user loaded: {String(isLoaded)}</p>
+              <p>Email if available: {user?.emailAddresses[0].emailAddress}</p>
+            </div>
+          </>
+        ) : (
+          <SignInButton />
+        )}
       </header>
       <main className="p-6">
         <div className="flex">
